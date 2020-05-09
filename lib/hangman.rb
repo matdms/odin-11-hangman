@@ -27,6 +27,7 @@ def gen_secret_word(source)
   rdm = rand(0..nb_words)
   # puts rdm
   secret_word = File.readlines(dico)[rdm].upcase
+  secret_word.gsub!("\r\n", "")
   return secret_word  
 end
 
@@ -47,7 +48,7 @@ class Game
     @joueur = joueur
     @secret_word = secret_word
     @found_word = []
-    (@secret_word.length-2).times { @found_word.push("_")}
+    (@secret_word.length).times { @found_word.push("_")}
     @@parties += 1
     @gameover = false
     # @good_tries = []
@@ -98,6 +99,11 @@ class Game
       if a
         check_try(a)
       end
+      if @secret_word == @found_word.join
+        puts "YOU WIN"
+        puts @secret_word
+        @gameover = true
+      end
     end
   end
 
@@ -105,13 +111,20 @@ end
 
 
 # create_dict("liste_francais.txt", "dico-fr.txt") # utilisé la 1ere fois pour générer le dico
-secret_word = gen_secret_word("dico.txt")
-# puts secret_word
 
+# Creation joueur 
 joueur1 = Player.new("Mathieu")
-# joueur2 = Player.new("Caro")
-# puts joueur1.name
 
-game = Game.new(joueur1, secret_word)
-# game.display()
-game.start()
+# Démarrage de la partie
+replay = true
+
+until !replay do
+  secret_word = gen_secret_word("dico.txt")
+  game = Game.new(joueur1, secret_word)
+  game.start()
+  puts "Continuer ? (O/N)"
+  suite = gets.chomp.to_s.upcase
+  if suite == "N"
+    replay = false
+  end
+end
