@@ -46,9 +46,11 @@ class Game
   def initialize(joueur, secret_word)
     @joueur = joueur
     @secret_word = secret_word
+    @found_word = []
+    (@secret_word.length-2).times { @found_word.push("_")}
     @@parties += 1
     @gameover = false
-    @good_tries = []
+    # @good_tries = []
     @bad_tries = []
   end
 
@@ -60,7 +62,7 @@ class Game
     puts "Player: #{@joueur.name}"
     puts "Partie: ##{self.get_game_nbr}"
     puts "Word:   #{@secret_word}"
-    print "Found: #{@good_tries}\n"
+    print "Found: #{@found_word}\n"
     print "Errors: #{@bad_tries}\n"
   end
   
@@ -77,7 +79,13 @@ class Game
 
   def check_try(a)
     if self.secret_word.include?(a)
-      @good_tries.push(a)
+      # @found_word.push(a)
+      le_mot = secret_word.split(//)
+      le_mot.each_with_index do |n, index|
+        if n == a
+          @found_word[index] = a
+        end
+      end
     else
       @bad_tries.push(a)
     end
