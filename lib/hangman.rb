@@ -1,7 +1,9 @@
+require 'json'
+
 =begin 
-  ouvrir 5desk.txt
-  créer dico.txt avec les mots yaant entre 5 et 12 caractères
-  sauvegarder dico.txt
+  TODO LIST
+    Créer la fonction de sauvegarde
+    qui enregistre l'objet Game eu format JSON
 =end
 
 # création du dictionnaire des mots de 5 à 12 caractères
@@ -65,15 +67,25 @@ class Game
     puts "Word:   #{@secret_word}"
     print "Found: #{@found_word}\n"
     print "Errors: #{@bad_tries}\n"
+    # puts self.save
   end
   
   def new_try()
-    puts "Nouvelle proposition ?"
+    puts "Nouvelle proposition ? (or save)"
+  
+  ###
+  # MARQUE-PAGE
+  ###
+
+  # insérer le if qui va bien pour sauver
+
     propal = gets.chomp.to_s.upcase
     if propal.match?(/^[A-Z]{1}$/)
+      puts " "
       return propal
-      # puts propal
     else 
+      puts "INVALID"
+      puts " "
       return false
     end
   end
@@ -107,17 +119,26 @@ class Game
     end
   end
 
+  def get_hash()
+    hash = {:partie => get_game_nbr(), :joueur => @joueur.name, :secret_word => @secret_word, :trouve => @found_word, :erreurs => @bad_tries}
+    return hash
+  end
+
+  def save()
+    mon_jeu = self.get_hash.to_json
+    return mon_jeu
+  end
+
 end
 
-
-# create_dict("liste_francais.txt", "dico-fr.txt") # utilisé la 1ere fois pour générer le dico
+# Creation du dictionnaire de jeu, à n'executer que lors de la 1ère partie
+# create_dict("liste_francais.txt", "dico-fr.txt")
 
 # Creation joueur 
 joueur1 = Player.new("Mathieu")
 
-# Démarrage de la partie
+# Démarrage de la partie + boucle multi parties
 replay = true
-
 until !replay do
   secret_word = gen_secret_word("dico.txt")
   game = Game.new(joueur1, secret_word)
@@ -128,3 +149,4 @@ until !replay do
     replay = false
   end
 end
+
